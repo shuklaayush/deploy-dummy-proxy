@@ -15,6 +15,10 @@ def main():
     deployer = accounts.at(DEPLOYER, force=True)
     accounts.default = deployer
 
+    # Deployer has balance to do txs
+    assert deployer.balance() > 0.1e18
+
+    # At least two nonces, one for logic and one for proxy 
     assert deployer.nonce + 1 < TARGET_NONCE
 
     logic = CallForwarder.deploy(publish_source=False)
