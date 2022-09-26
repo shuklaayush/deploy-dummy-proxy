@@ -46,6 +46,22 @@ def test_permissions(proxy, deployer, rando):
         with brownie.reverts("Ownable: caller is not the owner"):
             proxy.doCall(actor, 1e18, "", {"from": actor})
 
+        with brownie.reverts("Ownable: caller is not the owner"):
+            proxy.transferOwnership(actor, {"from": actor})
+
+
+def test_double_initialize(proxy, deployer):
+    with brownie.reverts("Initializable: contract is already initialized"):
+        proxy.initialize(deployer, {"from": deployer})
+
+
+def test_transfer_ownership(proxy, owner, rando):
+    assert proxy.owner() == owner
+
+    proxy.transferOwnership(rando, {"from": owner})
+
+    assert proxy.owner() == rando
+
 
 def test_call(proxy, owner, deployer, rando):
     deployer.transfer(proxy, 1e18)
